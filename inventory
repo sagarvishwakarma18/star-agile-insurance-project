@@ -1,0 +1,4 @@
+# inventory
+[appserver]
+52.53.219.38 ansible_user=ubuntu ansible_ssh_private_key_file=/Users/sagar/Downloads/Monitor.pem
+

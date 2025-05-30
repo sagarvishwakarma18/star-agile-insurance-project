@@ -1,0 +1,15 @@
+# deploy-insureme.yml
+- name: Deploy InsureMe Application
+  hosts: appserver
+  become: yes
+
+  tasks:
+    - name: Stop existing InsureMe container (if any)
+      shell: docker rm -f insureme || true
+
+    - name: Pull Docker image
+      shell: docker pull sagar18v/insureme:latest
+
+    - name: Run InsureMe container
+      shell: docker run -d --name insureme -p 8080:8080 <your-dockerhub-username>/insureme:latest
+
