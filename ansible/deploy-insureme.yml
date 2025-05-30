@@ -1,0 +1,41 @@
+---
+- name: Configure Docker and Deploy Insure-Me Container
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Start and enable Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Pull Docker image
+      community.docker.docker_image:
+        name: sagar18v/insure-me
+        tag: "{{ docker_tag | default('latest') }}"
+        source: pull
+
+    - name: Remove existing container if it exists
+      community.docker.docker_container:
+        name: insure-me
+        state: absent
+        force_kill: true
+
+    - name: Run Docker container
+      community.docker.docker_container:
+        name: insure-me
+        image: "sagar18v/insure-me:{{ docker_tag | default('latest') }}"
+        state: started
+        restart_policy: always
+        published_ports:
+          - "8084:8081"
